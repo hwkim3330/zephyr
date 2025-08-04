@@ -13,12 +13,3 @@ properties:
 
   clocks:
     description: MDIO clock source
-
-  clock-frequency:
-    type: int
-    description: MDIO clock frequency in Hz
-    default: 2500000
-
-child-binding:
-  description: PHY devices on the MDIO bus
-  $ref: ../ethernet/phy/ethernet-phy.yaml

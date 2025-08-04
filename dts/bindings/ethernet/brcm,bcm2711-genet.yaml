@@ -5,7 +5,7 @@ description: BCM2711 Gigabit Ethernet (GENET) controller
 
 compatible: "brcm,bcm2711-genet"
 
-include: [ethernet-controller.yaml, pinctrl-device.yaml]
+include: ethernet-controller.yaml
 
 properties:
   reg:
@@ -14,32 +14,11 @@ properties:
 
   interrupts:
     required: true
-    description: |
-      GENET interrupt sources:
-      - GENET interrupt
-      - GENET Wake-on-LAN interrupt
+    description: GENET interrupt sources
 
   interrupt-names:
     description: Names for the interrupt sources
     type: string-array
-
-  clocks:
-    description: GENET clock sources
-
-  clock-names:
-    description: Names for the clock sources
-    type: string-array
-
-  resets:
-    description: GENET reset control
-
-  reset-names:
-    description: Names for the reset controls
-    type: string-array
-
-  reset-gpios:
-    type: phandle-array
-    description: GPIO for PHY reset
 
   phy-mode:
     required: true
@@ -47,7 +26,7 @@ properties:
     type: string
     enum:
       - "mii"
-      - "rmii"
+      - "rmii" 
       - "gmii"
       - "rgmii"
       - "rgmii-id"
@@ -59,34 +38,8 @@ properties:
     type: phandle
     description: Reference to the PHY device
 
-  mdio:
-    type: compound
-    description: MDIO bus configuration
-
-  fixed-link:
-    type: compound
-    description: Fixed link configuration when no PHY is present
-
   max-speed:
     type: int
     description: Maximum link speed in Mbps
     enum: [10, 100, 1000]
     default: 1000
-
-  full-duplex:
-    type: boolean
-    description: Force full-duplex mode
-
-  tsn-support:
-    type: boolean
-    description: Enable Time-Sensitive Networking (TSN) features
-
-child-binding:
-  description: MDIO child device
-  properties:
-    compatible:
-      required: true
-    reg:
-      type: int
-      required: true
-      description: PHY address
