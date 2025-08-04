@@ -1,0 +1,92 @@
+# Copyright (c) 2025 TSN Implementation Team
+# SPDX-License-Identifier: Apache-2.0
+
+description: BCM2711 Gigabit Ethernet (GENET) controller
+
+compatible: "brcm,bcm2711-genet"
+
+include: [ethernet-controller.yaml, pinctrl-device.yaml]
+
+properties:
+  reg:
+    required: true
+    description: GENET register base address and size
+
+  interrupts:
+    required: true
+    description: |
+      GENET interrupt sources:
+      - GENET interrupt
+      - GENET Wake-on-LAN interrupt
+
+  interrupt-names:
+    description: Names for the interrupt sources
+    type: string-array
+
+  clocks:
+    description: GENET clock sources
+
+  clock-names:
+    description: Names for the clock sources
+    type: string-array
+
+  resets:
+    description: GENET reset control
+
+  reset-names:
+    description: Names for the reset controls
+    type: string-array
+
+  reset-gpios:
+    type: phandle-array
+    description: GPIO for PHY reset
+
+  phy-mode:
+    required: true
+    description: Ethernet PHY interface mode
+    type: string
+    enum:
+      - "mii"
+      - "rmii"
+      - "gmii"
+      - "rgmii"
+      - "rgmii-id"
+      - "rgmii-rxid"
+      - "rgmii-txid"
+      - "sgmii"
+
+  phy-handle:
+    type: phandle
+    description: Reference to the PHY device
+
+  mdio:
+    type: compound
+    description: MDIO bus configuration
+
+  fixed-link:
+    type: compound
+    description: Fixed link configuration when no PHY is present
+
+  max-speed:
+    type: int
+    description: Maximum link speed in Mbps
+    enum: [10, 100, 1000]
+    default: 1000
+
+  full-duplex:
+    type: boolean
+    description: Force full-duplex mode
+
+  tsn-support:
+    type: boolean
+    description: Enable Time-Sensitive Networking (TSN) features
+
+child-binding:
+  description: MDIO child device
+  properties:
+    compatible:
+      required: true
+    reg:
+      type: int
+      required: true
+      description: PHY address

@@ -9,8 +9,13 @@
 #include <zephyr/net/net_if.h>
 #include <zephyr/net/net_config.h>
 #include <zephyr/net/ethernet.h>
+#if defined(CONFIG_NET_L2_IEEE802_1CB)
 #include <zephyr/net/ieee802_1cb.h>
+#endif
+
+#if defined(CONFIG_NET_L2_IEEE802_1QBV)
 #include <zephyr/net/ieee802_1qbv.h>
+#endif
 #include <zephyr/shell/shell.h>
 
 LOG_MODULE_REGISTER(tsn_main, LOG_LEVEL_DBG);
@@ -119,6 +124,7 @@ static int cmd_tsn_status(const struct shell *sh, size_t argc, char **argv)
 	}
 	
 	/* Get and print TAS stats if available */
+#if defined(CONFIG_NET_L2_IEEE802_1QBV)
 	if (IS_ENABLED(CONFIG_NET_L2_IEEE802_1QBV)) {
 		bool gate_states[8];
 		int ret = ieee802_1qbv_get_gate_states(main_iface, gate_states);
@@ -130,6 +136,7 @@ static int cmd_tsn_status(const struct shell *sh, size_t argc, char **argv)
 			}
 		}
 	}
+#endif
 	
 	return 0;
 }

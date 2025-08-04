@@ -5,6 +5,9 @@
 
 menuconfig NET_L2_IEEE802_TSN
 	bool "IEEE 802.1 Time-Sensitive Networking (TSN) support"
+	depends on NET_L2_ETHERNET
+	select NET_PKT_TIMESTAMP
+	select NET_VLAN
 	help
 	  Enable IEEE 802.1 Time-Sensitive Networking (TSN) features.
 	  TSN provides deterministic networking with bounded latency,

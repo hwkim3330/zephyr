@@ -7,8 +7,13 @@
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
 #include <zephyr/net/net_if.h>
+#if defined(CONFIG_NET_L2_IEEE802_1CB)
 #include <zephyr/net/ieee802_1cb.h>
+#endif
+
+#if defined(CONFIG_NET_L2_IEEE802_1QBV)
 #include <zephyr/net/ieee802_1qbv.h>
+#endif
 
 LOG_MODULE_REGISTER(tsn_config, LOG_LEVEL_DBG);
 

@@ -12,15 +12,22 @@ LOG_MODULE_REGISTER(eth_bcm2711_gmac, CONFIG_ETH_BCM2711_LOG_LEVEL);
 #include <zephyr/kernel.h>
 #include <zephyr/device.h>
 #include <zephyr/drivers/gpio.h>
-#include <zephyr/drivers/clock_control.h>
 #include <zephyr/net/net_pkt.h>
 #include <zephyr/net/net_if.h>
 #include <zephyr/net/ethernet.h>
-#include <zephyr/net/phy.h>
-#include <zephyr/net/mdio.h>
-#include <zephyr/net/ieee802_1cb.h>
 #include <zephyr/sys/byteorder.h>
-#include <ethernet/eth_stats.h>
+
+#if defined(CONFIG_NET_L2_IEEE802_1CB)
+#include <zephyr/net/ieee802_1cb.h>
+#endif
+
+#if defined(CONFIG_MDIO)
+#include <zephyr/net/mdio.h>
+#endif
+
+#if defined(CONFIG_PHY)
+#include <zephyr/net/phy.h>
+#endif
 
 /* BCM2711 GENET (Gigabit Ethernet) register definitions */
 #define GENET_SYS_REV_CTRL		0x00
@@ -165,12 +172,14 @@ static int bcm2711_gmac_tx(const struct device *dev, struct net_pkt *pkt)
 	}
 	
 	/* Process TSN Frame Replication if enabled */
+#if defined(CONFIG_NET_L2_IEEE802_1CB)
 	if (data->tsn_enabled) {
 		ret = ieee802_1cb_replicate_frame(data->iface, pkt);
 		if (ret < 0) {
 			LOG_WRN("TSN frame replication failed: %d", ret);
 		}
 	}
+#endif
 	
 	k_sem_take(&data->tx_sem, K_FOREVER);
 	
@@ -239,6 +248,7 @@ static struct net_pkt *bcm2711_gmac_rx(const struct device *dev)
 	}
 	
 	/* Process TSN Frame Elimination if enabled */
+#if defined(CONFIG_NET_L2_IEEE802_1CB)
 	if (data->tsn_enabled) {
 		if (!ieee802_1cb_eliminate_frame(data->iface, pkt)) {
 			LOG_DBG("Frame eliminated by TSN FRER");
@@ -247,6 +257,7 @@ static struct net_pkt *bcm2711_gmac_rx(const struct device *dev)
 			return NULL;
 		}
 	}
+#endif
 	
 	data->stats.bytes_rx += frame_len;
 	data->stats.pkts_rx++;
@@ -322,11 +333,16 @@ static int bcm2711_gmac_enable_tsn(const struct device *dev, bool enable)
 	k_mutex_lock(&data->tsn_mutex, K_FOREVER);
 	
 	if (enable && !data->tsn_enabled) {
+#if defined(CONFIG_NET_L2_IEEE802_1CB)
 		ret = ieee802_1cb_init(data->iface);
 		if (ret == 0) {
 			data->tsn_enabled = true;
 			LOG_INF("TSN features enabled");
 		}
+#else
+		LOG_WRN("TSN support not compiled in");
+		ret = -ENOTSUP;
+#endif
 	} else if (!enable && data->tsn_enabled) {
 		data->tsn_enabled = false;
 		LOG_INF("TSN features disabled");

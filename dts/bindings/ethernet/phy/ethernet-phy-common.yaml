@@ -19,3 +19,7 @@ properties:
       - "100BASE Full-Duplex"
       - "1000BASE Half-Duplex"
       - "1000BASE Full-Duplex"
+  max-speed:
+    type: int
+    description: Maximum PHY speed in Mbps (e.g., 10, 100, 1000)
+    enum: [10, 100, 1000]

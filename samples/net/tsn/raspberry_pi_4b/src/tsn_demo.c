@@ -9,8 +9,13 @@
 #include <zephyr/net/net_if.h>
 #include <zephyr/net/net_pkt.h>
 #include <zephyr/net/ethernet.h>
+#if defined(CONFIG_NET_L2_IEEE802_1CB)
 #include <zephyr/net/ieee802_1cb.h>
+#endif
+
+#if defined(CONFIG_NET_L2_IEEE802_1QBV)
 #include <zephyr/net/ieee802_1qbv.h>
+#endif
 #include <zephyr/random/random.h>
 
 LOG_MODULE_REGISTER(tsn_demo, LOG_LEVEL_DBG);

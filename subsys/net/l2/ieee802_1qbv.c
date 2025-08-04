@@ -13,13 +13,15 @@ LOG_MODULE_REGISTER(net_ieee802_1qbv, CONFIG_NET_L2_IEEE802_1QBV_LOG_LEVEL);
 #include <zephyr/net/ethernet.h>
 #include <zephyr/net/net_time.h>
 
-static struct ieee802_1qbv_instance qbv_instances[CONFIG_NET_IF_MAX_IPV4_COUNT];
+#define MAX_TSN_INTERFACES 4
+
+static struct ieee802_1qbv_instance qbv_instances[MAX_TSN_INTERFACES];
 
 static struct ieee802_1qbv_instance *get_qbv_instance(struct net_if *iface)
 {
 	int index = net_if_get_by_iface(iface);
 	
-	if (index < 0 || index >= CONFIG_NET_IF_MAX_IPV4_COUNT) {
+	if (index < 0 || index >= MAX_TSN_INTERFACES) {
 		return NULL;
 	}
 	
