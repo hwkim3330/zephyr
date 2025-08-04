@@ -35,3 +35,7 @@ endif()
 if(CONFIG_NET_L2_CANBUS_RAW)
   add_subdirectory(canbus)
 endif()
+
+# TSN (Time-Sensitive Networking) support
+zephyr_library_sources_ifdef(CONFIG_NET_L2_IEEE802_1CB ieee802_1cb.c)
+zephyr_library_sources_ifdef(CONFIG_NET_L2_IEEE802_1QBV ieee802_1qbv.c)

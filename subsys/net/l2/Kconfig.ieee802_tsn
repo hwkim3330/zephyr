@@ -1,0 +1,140 @@
+# IEEE 802.1 TSN (Time-Sensitive Networking) Configuration
+
+# Copyright (c) 2025 TSN Implementation Team
+# SPDX-License-Identifier: Apache-2.0
+
+menuconfig NET_L2_IEEE802_TSN
+	bool "IEEE 802.1 Time-Sensitive Networking (TSN) support"
+	help
+	  Enable IEEE 802.1 Time-Sensitive Networking (TSN) features.
+	  TSN provides deterministic networking with bounded latency,
+	  reliability, and precise time synchronization.
+
+if NET_L2_IEEE802_TSN
+
+config NET_L2_IEEE802_1CB
+	bool "IEEE 802.1CB Frame Replication and Elimination (FRER)"
+	help
+	  Enable IEEE 802.1CB Frame Replication and Elimination for Reliability (FRER).
+	  This provides seamless redundancy by replicating frames across multiple paths
+	  and eliminating duplicates at the destination.
+
+if NET_L2_IEEE802_1CB
+
+config NET_L2_IEEE802_1CB_LOG_LEVEL
+	int "IEEE 802.1CB log level"
+	default 3
+	range 0 4
+	help
+	  Set the log level for IEEE 802.1CB FRER.
+	  0: No logging
+	  1: Error messages only  
+	  2: Warning messages
+	  3: Info messages (default)
+	  4: Debug messages
+
+config NET_L2_IEEE802_1CB_MAX_STREAMS
+	int "Maximum number of FRER streams"
+	default 32
+	range 1 256
+	help
+	  Maximum number of IEEE 802.1CB FRER streams that can be configured
+	  per network interface.
+
+config NET_L2_IEEE802_1CB_DEFAULT_HISTORY_LENGTH
+	int "Default sequence recovery history length"
+	default 32
+	range 1 1024
+	help
+	  Default number of sequence numbers to remember for duplicate detection.
+	  Larger values provide better duplicate detection but use more memory.
+
+endif # NET_L2_IEEE802_1CB
+
+config NET_L2_IEEE802_1QBV
+	bool "IEEE 802.1Qbv Time-Aware Scheduling (TAS)"
+	help
+	  Enable IEEE 802.1Qbv Time-Aware Scheduling (TAS).
+	  TAS provides deterministic transmission by controlling when frames
+	  of different traffic classes can be transmitted.
+
+if NET_L2_IEEE802_1QBV
+
+config NET_L2_IEEE802_1QBV_LOG_LEVEL
+	int "IEEE 802.1Qbv log level"
+	default 3
+	range 0 4
+	help
+	  Set the log level for IEEE 802.1Qbv TAS.
+	  0: No logging
+	  1: Error messages only
+	  2: Warning messages  
+	  3: Info messages (default)
+	  4: Debug messages
+
+config NET_L2_IEEE802_1QBV_MAX_GATE_ENTRIES
+	int "Maximum gate control list entries"
+	default 1024
+	range 1 4096
+	help
+	  Maximum number of gate control list entries per port.
+	  Each entry defines gate states for traffic classes during a time interval.
+
+config NET_L2_IEEE802_1QBV_TIMER_RESOLUTION_NS
+	int "Timer resolution in nanoseconds"
+	default 1000
+	range 100 10000
+	help
+	  Timer resolution for gate control operations. Smaller values provide
+	  better timing precision but may increase CPU overhead.
+
+endif # NET_L2_IEEE802_1QBV
+
+config NET_L2_IEEE802_1QBU
+	bool "IEEE 802.1Qbu Frame Preemption"
+	help
+	  Enable IEEE 802.1Qbu Frame Preemption.
+	  Allows high-priority frames to interrupt transmission of low-priority
+	  frames, reducing latency for time-critical traffic.
+
+if NET_L2_IEEE802_1QBU
+
+config NET_L2_IEEE802_1QBU_LOG_LEVEL
+	int "IEEE 802.1Qbu log level"  
+	default 3
+	range 0 4
+	help
+	  Set the log level for IEEE 802.1Qbu Frame Preemption.
+
+config NET_L2_IEEE802_1QBU_MIN_FRAG_SIZE
+	int "Minimum fragment size in bytes"
+	default 64
+	range 64 512
+	help
+	  Minimum size of frame fragments when preemption occurs.
+	  Smaller values allow finer preemption granularity.
+
+endif # NET_L2_IEEE802_1QBU
+
+config NET_L2_IEEE802_1AS
+	bool "IEEE 802.1AS Timing and Synchronization (gPTP)"
+	default y if NET_GPTP
+	help
+	  Enable IEEE 802.1AS (generalized Precision Time Protocol).
+	  Provides precise time synchronization across the network,
+	  which is essential for TSN applications.
+
+config NET_L2_IEEE802_TSN_STATS
+	bool "TSN statistics collection"
+	default y
+	help
+	  Enable collection of TSN-related statistics including
+	  frame counts, timing violations, and queue depths.
+
+config NET_L2_IEEE802_TSN_MGMT
+	bool "TSN management interface"
+	help
+	  Enable management interface for TSN configuration and monitoring.
+	  Allows runtime configuration of TSN features via network management.
+
+endif # NET_L2_IEEE802_TSN

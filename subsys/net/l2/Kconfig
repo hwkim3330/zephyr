@@ -84,4 +84,6 @@ config NET_L2_PTP
 	help
 	  Add support for PTP L2 capabilities. Required by gPTP.
 
+source "subsys/net/l2/Kconfig.ieee802_tsn"
+
 endmenu

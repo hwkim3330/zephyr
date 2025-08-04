@@ -1,0 +1,66 @@
+# BCM2711 Gigabit Ethernet (GENET) driver configuration
+
+# Copyright (c) 2025 TSN Implementation Team
+# SPDX-License-Identifier: Apache-2.0
+
+config ETH_BCM2711
+	bool "BCM2711 Gigabit Ethernet (GENET) driver"
+	default y
+	depends on DT_HAS_BRCM_BCM2711_GENET_ENABLED
+	select MDIO
+	select NET_L2_ETHERNET
+	help
+	  Enable BCM2711 Gigabit Ethernet (GENET) driver for Raspberry Pi 4B/5.
+	  This driver supports the built-in Ethernet controller with TSN features.
+
+if ETH_BCM2711
+
+config ETH_BCM2711_LOG_LEVEL
+	int "BCM2711 Ethernet driver log level"
+	default 3
+	range 0 4
+	help
+	  Set the log level for BCM2711 Ethernet driver.
+	  0: No logging
+	  1: Error messages only
+	  2: Warning messages
+	  3: Info messages (default)
+	  4: Debug messages
+
+config ETH_BCM2711_TSN_SUPPORT
+	bool "Enable TSN (Time-Sensitive Networking) support"
+	default y
+	select NET_L2_IEEE802_1CB
+	select NET_L2_IEEE802_1QBV
+	help
+	  Enable TSN features including 802.1CB (Frame Replication and 
+	  Elimination) and 802.1Qbv (Time-Aware Scheduling).
+
+config ETH_BCM2711_RX_THREAD_PRIORITY
+	int "RX thread priority"
+	default 2
+	help
+	  Priority of the RX thread for BCM2711 Ethernet driver.
+	  Lower values mean higher priority.
+
+config ETH_BCM2711_RX_THREAD_STACK_SIZE
+	int "RX thread stack size"
+	default 1024
+	help
+	  Stack size for the RX thread in bytes.
+
+config ETH_BCM2711_TX_TIMEOUT_MS
+	int "TX timeout in milliseconds"
+	default 100
+	help
+	  Maximum time to wait for TX completion.
+
+config ETH_BCM2711_DMA_DESCRIPTORS
+	int "Number of DMA descriptors"
+	default 64
+	range 16 256
+	help
+	  Number of DMA descriptors for both TX and RX rings.
+	  More descriptors can improve performance but use more memory.
+
+endif # ETH_BCM2711
