@@ -8,7 +8,19 @@
       "Bash(git push:*)",
       "WebFetch(domain:github.com)",
       "Bash(git remote set-url:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(find:*)",
+      "Bash(ls:*)",
+      "Bash(rm:*)",
+      "Bash(west build:*)",
+      "Bash(python:*)",
+      "Bash(pacman:*)",
+      "Bash(cmake:*)",
+      "Bash(source:*)",
+      "Bash(pip install:*)",
+      "Bash(git reset:*)",
+      "Bash(true)",
+      "Bash(grep:*)"
     ],
     "deny": []
   }

@@ -7,8 +7,7 @@ config ETH_BCM2711
 	bool "BCM2711 Gigabit Ethernet (GENET) driver"
 	default y
 	depends on DT_HAS_BRCM_BCM2711_GENET_ENABLED
-	select MDIO
-	select NET_L2_ETHERNET
+	depends on NET_L2_ETHERNET
 	help
 	  Enable BCM2711 Gigabit Ethernet (GENET) driver for Raspberry Pi 4B/5.
 	  This driver supports the built-in Ethernet controller with TSN features.
