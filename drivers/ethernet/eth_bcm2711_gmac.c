@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#define DT_DRV_COMPAT brcm,bcm2711-genet
+#define DT_DRV_COMPAT ethernet
 
 #include <zephyr/logging/log.h>
 LOG_MODULE_REGISTER(eth_bcm2711_gmac, CONFIG_ETH_BCM2711_LOG_LEVEL);
