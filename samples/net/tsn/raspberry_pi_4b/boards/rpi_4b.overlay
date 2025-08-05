@@ -1,0 +1,15 @@
+/*
+ * USB CDC-ACM overlay for Raspberry Pi 4B TSN
+ */
+
+/ {
+    chosen {
+        zephyr,console = &cdc_acm_uart0;
+        zephyr,shell-uart = &cdc_acm_uart0;
+    };
+    
+    cdc_acm_uart0: cdc_acm_uart {
+        compatible = "zephyr,cdc-acm-uart";
+        label = "CDC_ACM_0";
+    };
+};
