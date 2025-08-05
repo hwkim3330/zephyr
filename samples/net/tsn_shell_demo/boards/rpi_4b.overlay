@@ -1,0 +1,25 @@
+/*
+ * USB-C CDC ACM Serial Console overlay for Raspberry Pi 4B
+ * Enables USB-C port as virtual serial console instead of GPIO UART
+ */
+
+/ {
+	chosen {
+		zephyr,console = &cdc_acm_uart0;
+		zephyr,shell-uart = &cdc_acm_uart0;
+	};
+	
+	cdc_acm_uart0: cdc_acm_uart {
+		compatible = "zephyr,cdc-acm-uart";
+		label = "CDC_ACM_0";
+	};
+};
+
+/* Disable GPIO UART if defined */
+&uart0 {
+	status = "disabled";
+};
+
+&uart1 {
+	status = "disabled";
+};
