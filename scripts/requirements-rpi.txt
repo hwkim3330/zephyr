@@ -1,0 +1,26 @@
+# Raspberry Pi 4B TSN Build Requirements
+# For error-free build on Raspberry Pi 4B with TSN support
+
+# Core Python requirements
+PyYAML>=5.1
+west>=1.0.0
+pyelftools>=0.27
+canopen>=2.0.0
+
+# Device tree processing
+dtlib>=1.0.0
+python-devicetree>=1.0.0
+
+# Build and testing
+kconfiglib>=14.1.0
+junitparser>=2.0.0
+psutil
+colorama
+
+# TSN specific requirements
+scapy>=2.4.5
+numpy>=1.19.0
+
+# Additional utilities for TSN development
+matplotlib>=3.3.0
+netifaces>=0.11.0

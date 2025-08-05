@@ -20,7 +20,8 @@
       "Bash(pip install:*)",
       "Bash(git reset:*)",
       "Bash(true)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(chmod:*)"
     ],
     "deny": []
   }

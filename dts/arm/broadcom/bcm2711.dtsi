@@ -1,0 +1,156 @@
+/*
+ * Copyright (c) 2025 TSN Implementation Team
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+#include <mem.h>
+#include <zephyr/dt-bindings/gpio/gpio.h>
+#include <zephyr/dt-bindings/interrupt-controller/arm-gic.h>
+
+/ {
+	compatible = "brcm,bcm2711";
+	#address-cells = <1>;
+	#size-cells = <1>;
+
+	chosen {
+		zephyr,entropy = &rng;
+	};
+
+	cpus {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		cpu@0 {
+			device_type = "cpu";
+			compatible = "arm,cortex-a72";
+			reg = <0>;
+		};
+
+		cpu@1 {
+			device_type = "cpu";
+			compatible = "arm,cortex-a72";
+			reg = <1>;
+		};
+
+		cpu@2 {
+			device_type = "cpu";
+			compatible = "arm,cortex-a72";
+			reg = <2>;
+		};
+
+		cpu@3 {
+			device_type = "cpu";
+			compatible = "arm,cortex-a72";
+			reg = <3>;
+		};
+	};
+
+	sram0: memory@0 {
+		compatible = "mmio-sram";
+		reg = <0x0 DT_SIZE_M(1)>;
+	};
+
+	soc {
+		compatible = "simple-bus";
+		#address-cells = <1>;
+		#size-cells = <1>;
+		ranges;
+
+		interrupt-parent = <&gic>;
+
+		gic: interrupt-controller@ff841000 {
+			compatible = "arm,gic-400";
+			reg = <0xff841000 0x1000>,
+			      <0xff842000 0x2000>;
+			interrupt-controller;
+			#interrupt-cells = <4>;
+			status = "okay";
+		};
+
+		uart0: serial@fe201000 {
+			compatible = "brcm,bcm2835-uart";
+			reg = <0xfe201000 0x200>;
+			interrupts = <GIC_SPI 121 IRQ_TYPE_LEVEL_HIGH>;
+			clock-frequency = <48000000>;
+			status = "disabled";
+		};
+
+		uart1: serial@fe215040 {
+			compatible = "brcm,bcm2835-aux-uart";
+			reg = <0xfe215040 0x40>;
+			interrupts = <GIC_SPI 93 IRQ_TYPE_LEVEL_HIGH>;
+			clock-frequency = <500000000>;
+			status = "okay";
+		};
+
+		gpio: gpio@fe200000 {
+			compatible = "brcm,bcm2835-gpio";
+			reg = <0xfe200000 0xb4>;
+			interrupts = <GIC_SPI 113 IRQ_TYPE_LEVEL_HIGH>,
+				     <GIC_SPI 114 IRQ_TYPE_LEVEL_HIGH>,
+				     <GIC_SPI 115 IRQ_TYPE_LEVEL_HIGH>,
+				     <GIC_SPI 116 IRQ_TYPE_LEVEL_HIGH>;
+			gpio-controller;
+			#gpio-cells = <2>;
+			interrupt-controller;
+			#interrupt-cells = <2>;
+			status = "okay";
+		};
+
+		rng: rng@fe104000 {
+			compatible = "brcm,bcm2835-rng";
+			reg = <0xfe104000 0x10>;
+			status = "okay";
+		};
+
+		/* Ethernet Controller - BCM GENET */
+		ethernet: ethernet@fd580000 {
+			compatible = "ethernet";
+			reg = <0xfd580000 0x10000>;
+			interrupts = <GIC_SPI 157 IRQ_TYPE_LEVEL_HIGH>,
+				     <GIC_SPI 158 IRQ_TYPE_LEVEL_HIGH>;
+			interrupt-names = "macirq", "ring16";
+			status = "okay";
+			
+			ethernet-phy@1 {
+				compatible = "ethernet-phy";
+				reg = <1>;
+				max-speed = <1000>;
+			};
+		};
+
+		timer: timer@fe003000 {
+			compatible = "brcm,bcm2835-system-timer";
+			reg = <0xfe003000 0x1c>;
+			interrupts = <GIC_SPI 96 IRQ_TYPE_LEVEL_HIGH>,
+				     <GIC_SPI 97 IRQ_TYPE_LEVEL_HIGH>,
+				     <GIC_SPI 98 IRQ_TYPE_LEVEL_HIGH>,
+				     <GIC_SPI 99 IRQ_TYPE_LEVEL_HIGH>;
+			status = "okay";
+		};
+	};
+};
+
+/* Pin control aliases */
+&gpio {
+	uart1_pins: uart1_pins {
+		brcm,pins = <14 15>;
+		brcm,function = <2>; /* alt5 */
+	};
+
+	ethernet_pins: ethernet_pins {
+		brcm,pins = <4 5 6 7 8 9 10 11>;
+		brcm,function = <0>; /* input */
+	};
+};
+
+&uart1 {
+	pinctrl-0 = <&uart1_pins>;
+	pinctrl-names = "default";
+};
+
+&ethernet {
+	pinctrl-0 = <&ethernet_pins>;
+	pinctrl-names = "default";
+};
