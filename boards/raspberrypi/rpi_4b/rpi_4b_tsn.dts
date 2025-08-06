@@ -1,0 +1,78 @@
+/*
+ * Copyright 2025 TSN Project
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/dts-v1/;
+
+#include <arm64/broadcom/bcm2711.dtsi>
+#include <zephyr/dt-bindings/gpio/gpio.h>
+
+/ {
+	model = "Raspberry Pi 4 Model B - TSN Configuration";
+	compatible = "raspberrypi,4-model-b", "brcm,bcm2838";
+	#address-cells = <1>;
+	#size-cells = <1>;
+
+	aliases {
+		led0 = &led_act;
+		ethernet0 = &genet;
+	};
+
+	chosen {
+		zephyr,console = &uart1;
+		zephyr,shell-uart = &uart1;
+		zephyr,sram = &sram0;
+	};
+
+	leds {
+		compatible = "gpio-leds";
+
+		led_act: led-act {
+			gpios = <&gpio1 14 GPIO_ACTIVE_HIGH>; /* GPIO 42 */
+			label = "ACT";
+		};
+	};
+};
+
+&gpio0 {
+	status = "okay";
+};
+
+&gpio1 {
+	status = "okay";
+};
+
+&uart1 {
+	status = "okay";
+	current-speed = <115200>;
+};
+
+/* Add ethernet support */
+/ {
+	soc {
+		/* Raspberry Pi 4 GENET ethernet controller */
+		genet: ethernet@fd580000 {
+			compatible = "brcm,genet-v5";
+			reg = <0xfd580000 0x10000>;
+			interrupts = <GIC_SPI 157 IRQ_TYPE_LEVEL IRQ_DEFAULT_PRIORITY>,
+				     <GIC_SPI 158 IRQ_TYPE_LEVEL IRQ_DEFAULT_PRIORITY>;
+			interrupt-names = "rx", "tx";
+			status = "okay";
+
+			/* Enable TSN features */
+			ptp-clock = <&ptp_clock>;
+			
+			/* Configure for gPTP support */
+			local-mac-address = [b8 27 eb 00 00 00];
+		};
+
+		/* PTP clock for TSN */
+		ptp_clock: ptp-clock@fd580000 {
+			compatible = "ptp-clock";
+			reg = <0xfd580000 0x10000>;
+			status = "okay";
+		};
+	};
+};
